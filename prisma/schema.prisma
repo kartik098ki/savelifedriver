@@ -1,0 +1,191 @@
+// SAVIFE Ambulance Driver Platform Database Schema
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum DriverStatus {
+  ONLINE
+  OFFLINE
+  ON_TRIP
+  BUSY
+}
+
+enum AmbulanceType {
+  ALS // Advanced Life Support
+  BLS // Basic Life Support
+  PATIENT_TRANSPORT
+  ICU_ON_WHEELS
+}
+
+enum EmergencyLevel {
+  CRITICAL
+  HIGH
+  MEDIUM
+  LOW
+}
+
+enum TripStatus {
+  SEARCHING
+  BOOKING_RECEIVED
+  ACCEPTED
+  EN_ROUTE_TO_PATIENT
+  ARRIVED_AT_PICKUP
+  PATIENT_VERIFIED
+  PATIENT_ONBOARD
+  SEARCHING_HOSPITAL
+  HOSPITAL_SELECTED
+  HOSPITAL_CONFIRMED
+  EN_ROUTE_TO_HOSPITAL
+  ARRIVED_AT_HOSPITAL
+  TRIP_COMPLETED
+  CANCELLED
+}
+
+enum HospitalCommStatus {
+  INITIATED
+  IN_PROGRESS
+  ACCEPTED
+  REJECTED
+  FAILED
+}
+
+model Driver {
+  id                 String       @id @default(cuid())
+  name               String
+  phone              String       @unique
+  ambulanceNumber    String
+  status             DriverStatus @default(ONLINE)
+  rating             Float        @default(4.9)
+  totalTrips         Int          @default(0)
+  currentLatitude    Float
+  currentLongitude   Float
+  verificationStatus String       @default("VERIFIED")
+  profileImage       String?
+  licenseNumber      String       @unique
+  experienceYears    Int          @default(5)
+  createdAt          DateTime     @default(now())
+  updatedAt          DateTime     @updatedAt
+
+  ambulances         Ambulance[]
+  bookings           Booking[]
+  trips              Trip[]
+}
+
+model Ambulance {
+  id                   String        @id @default(cuid())
+  driverId             String
+  driver               Driver        @relation(fields: [driverId], references: [id])
+  registrationNumber   String        @unique
+  type                 AmbulanceType @default(ALS)
+  capacity             String
+  equipment            String[]
+  status               String        @default("ACTIVE")
+  oxygenLevel          Int           @default(95)
+  ventilatorAvailable  Boolean       @default(true)
+  defibrillatorAvailable Boolean     @default(true)
+  createdAt            DateTime      @default(now())
+  updatedAt            DateTime      @updatedAt
+}
+
+model Patient {
+  id                  String         @id @default(cuid())
+  name                String
+  age                 Int
+  gender              String
+  phone               String
+  emergencyLevel      EmergencyLevel @default(HIGH)
+  medicalCondition    String
+  specialRequirements String[]
+  createdAt           DateTime       @default(now())
+  updatedAt           DateTime       @updatedAt
+
+  bookings            Booking[]
+}
+
+model Hospital {
+  id                 String   @id @default(cuid())
+  name               String
+  latitude           Float
+  longitude          Float
+  address            String
+  emergencyAvailable Boolean  @default(true)
+  doctorsAvailable   Boolean  @default(true)
+  bedsAvailable      Boolean  @default(true)
+  icuAvailable       Boolean  @default(true)
+  bedCount           Int      @default(30)
+  icuBedCount        Int      @default(8)
+  rating             Float    @default(4.7)
+  imageUrl           String?
+  specialties        String[]
+  phone              String
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  interactions       HospitalInteraction[]
+  trips              Trip[]
+}
+
+model Booking {
+  id                 String         @id @default(cuid())
+  patientId          String
+  patient            Patient        @relation(fields: [patientId], references: [id])
+  driverId           String
+  driver             Driver         @relation(fields: [driverId], references: [id])
+  pickupAddress      String
+  pickupLatitude     Float
+  pickupLongitude    Float
+  pickupLandmark     String?
+  fare               Float
+  distanceKm         Float
+  estimatedMinutes   Int
+  status             TripStatus     @default(BOOKING_RECEIVED)
+  emergencyLevel     EmergencyLevel @default(HIGH)
+  otp                String         // 4-digit verification code e.g. "4827"
+  createdAt          DateTime       @default(now())
+  acceptedAt         DateTime?
+  arrivedPickupAt    DateTime?
+  patientVerifiedAt  DateTime?
+  completedAt        DateTime?
+  rejectedHospitals  String[]       @default([])
+  reRouteCount       Int            @default(0)
+
+  interactions       HospitalInteraction[]
+  trips              Trip[]
+}
+
+model HospitalInteraction {
+  id                  String             @id @default(cuid())
+  bookingId           String
+  booking             Booking            @relation(fields: [bookingId], references: [id])
+  hospitalId          String
+  hospital            Hospital           @relation(fields: [hospitalId], references: [id])
+  communicationStatus HospitalCommStatus @default(INITIATED)
+  responseReason      String?
+  timestamp           DateTime           @default(now())
+  source              String             @default("AI_AGENT_CALL")
+  transcriptSnippet   String?
+}
+
+model Trip {
+  id                 String    @id @default(cuid())
+  bookingId          String
+  booking            Booking   @relation(fields: [bookingId], references: [id])
+  driverId           String
+  driver             Driver    @relation(fields: [driverId], references: [id])
+  hospitalId         String
+  finalHospital      Hospital  @relation(fields: [hospitalId], references: [id])
+  distanceKm         Float
+  durationMinutes    Int
+  fare               Float
+  driverEarnings     Float
+  status             String    @default("Completed")
+  otpVerified        Boolean   @default(true)
+  aiRerouted         Boolean   @default(false)
+  createdAt          DateTime  @default(now())
+}
