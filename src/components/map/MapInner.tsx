@@ -1,8 +1,10 @@
 'use client';
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useDriver } from '@/context/DriverContext';
+import { HIGH_DEMAND_ZONES, STANDBY_AMBULANCES, INITIAL_PICKUP_LOCATION } from '@/lib/constants';
 import L from 'leaflet';
+import { Flame, Layers, Shield } from 'lucide-react';
 
 export default function MapInner() {
   const mapContainerRef = useRef<HTMLDivElement>(null);
@@ -15,10 +17,14 @@ export default function MapInner() {
   const polylineRef = useRef<L.Polyline | null>(null);
   const polylineCasingRef = useRef<L.Polyline | null>(null);
   const trafficMarkersRef = useRef<L.Marker[]>([]);
+  const demandLayersRef = useRef<L.Layer[]>([]);
+  const standbyAmbulanceMarkersRef = useRef<L.Marker[]>([]);
+
+  const [showSurgeZones, setShowSurgeZones] = useState<boolean>(true);
 
   const { currentLocation, routeCoordinates, tripStatus, selectedHospital, trafficLights } = useDriver();
 
-  // Initialize Clean Light Leaflet Map
+  // Initialize Clean Bright White Leaflet Map
   useEffect(() => {
     if (!mapContainerRef.current || mapInstanceRef.current) return;
 
@@ -29,7 +35,7 @@ export default function MapInner() {
       attributionControl: false,
     });
 
-    // Pristine Light Street Map
+    // Pristine Light Street Map (CartoDB Voyager)
     L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
       maxZoom: 19,
       subdomains: 'abcd',
@@ -45,7 +51,98 @@ export default function MapInner() {
     };
   }, []);
 
-  // Ambulance Marker Update
+  // Render Demand Surge Zones (Uber/Rapido style)
+  useEffect(() => {
+    if (!mapInstanceRef.current) return;
+    const map = mapInstanceRef.current;
+
+    // Clear previous demand layers
+    demandLayersRef.current.forEach((layer) => map.removeLayer(layer));
+    demandLayersRef.current = [];
+
+    if (!showSurgeZones) return;
+
+    HIGH_DEMAND_ZONES.forEach((zone) => {
+      const isSurge = zone.type === 'HIGH_DEMAND' || zone.type === 'SURGE_EMERGENCY';
+      const color = isSurge ? '#EA580C' : '#059669';
+      const fillColor = isSurge ? '#F97316' : '#10B981';
+
+      // Circle polygon
+      const circle = L.circle([zone.lat, zone.lng], {
+        radius: zone.radiusMeters,
+        color: color,
+        fillColor: fillColor,
+        fillOpacity: isSurge ? 0.14 : 0.08,
+        weight: 1.5,
+        dashArray: isSurge ? '4, 4' : undefined,
+      }).addTo(map);
+      demandLayersRef.current.push(circle);
+
+      // Zone Label Badge
+      const labelIcon = L.divIcon({
+        className: 'demand-zone-badge',
+        html: `
+          <div style="
+            background: #FFFFFF;
+            border: 1.5px solid ${color};
+            border-radius: 12px;
+            padding: 3px 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+            font-size: 10px;
+            font-weight: 800;
+            color: ${color};
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            white-space: nowrap;
+          ">
+            <span>${isSurge ? '🔥' : '🟢'}</span>
+            <span>${zone.name}</span>
+            <span style="background: ${isSurge ? '#FFEDD5' : '#D1FAE5'}; color: ${color}; padding: 1px 4px; border-radius: 6px; font-size: 9px;">${zone.surgeMultiplier}</span>
+          </div>
+        `,
+        iconSize: [220, 26],
+        iconAnchor: [110, 13],
+      });
+
+      const labelMarker = L.marker([zone.lat, zone.lng], { icon: labelIcon }).addTo(map);
+      demandLayersRef.current.push(labelMarker);
+    });
+
+    // Standby Ambulances Network
+    STANDBY_AMBULANCES.forEach((amb) => {
+      const ambIcon = L.divIcon({
+        className: 'standby-amb-marker',
+        html: `
+          <div style="
+            background: #FFFFFF;
+            border: 1.5px solid #0284C7;
+            border-radius: 20px;
+            padding: 2px 7px;
+            box-shadow: 0 2px 8px rgba(2, 132, 199, 0.25);
+            font-size: 9px;
+            font-weight: 800;
+            color: #0369A1;
+            display: flex;
+            align-items: center;
+            gap: 3px;
+            white-space: nowrap;
+          ">
+            <span>🚑</span>
+            <span>${amb.id}</span>
+          </div>
+        `,
+        iconSize: [110, 22],
+        iconAnchor: [55, 11],
+      });
+
+      const ambMarker = L.marker([amb.lat, amb.lng], { icon: ambIcon }).addTo(map);
+      standbyAmbulanceMarkersRef.current.push(ambMarker);
+      demandLayersRef.current.push(ambMarker);
+    });
+  }, [showSurgeZones]);
+
+  // Ambulance Marker Update (Emerald Pulsing Marker)
   useEffect(() => {
     if (!mapInstanceRef.current) return;
 
@@ -53,28 +150,34 @@ export default function MapInner() {
       className: 'custom-navigation-icon',
       html: `
         <div class="navigation-marker-container">
-          <div class="beacon-pulse-blue"></div>
           <div style="
-            width: 42px;
-            height: 42px;
-            background: #2563EB;
-            border: 3px solid #FFFFFF;
+            position: absolute;
+            inset: -8px;
+            border-radius: 50%;
+            background: rgba(5, 150, 105, 0.25);
+            animation: ping 1.5s cubic-bezier(0, 0, 0.2, 1) infinite;
+          "></div>
+          <div style="
+            width: 44px;
+            height: 44px;
+            background: #059669;
+            border: 3.5px solid #FFFFFF;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 4px 16px rgba(37, 99, 235, 0.45), 0 2px 6px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 4px 18px rgba(5, 150, 105, 0.5), 0 2px 8px rgba(0, 0, 0, 0.15);
             position: relative;
             z-index: 20;
           ">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
               <path d="m5 19 14-7L5 5v5l10 2-10 2v5Z" fill="#FFFFFF" stroke="#FFFFFF"></path>
             </svg>
           </div>
         </div>
       `,
-      iconSize: [42, 42],
-      iconAnchor: [21, 21],
+      iconSize: [44, 44],
+      iconAnchor: [22, 22],
     });
 
     if (!markerRef.current) {
@@ -149,7 +252,7 @@ export default function MapInner() {
       }).addTo(map);
 
       polylineRef.current = L.polyline(latLngs, {
-        color: '#2563EB',
+        color: '#059669',
         weight: 6,
         opacity: 1,
       }).addTo(map);
@@ -176,19 +279,19 @@ export default function MapInner() {
           white-space: nowrap;
         ">
           <span style="width: 8px; height: 8px; border-radius: 50%; background: #FFFFFF; display: inline-block;"></span>
-          LIVE CUSTOMER PICKUP
+          PICKUP: SHIPRA SUN CITY (4 MIN)
         </div>
       `,
-      iconSize: [170, 30],
-      iconAnchor: [85, 15],
+      iconSize: [210, 30],
+      iconAnchor: [105, 15],
     });
 
     if (tripStatus !== 'OFFLINE' && tripStatus !== 'COMPLETED') {
       if (!pickupMarkerRef.current) {
-        pickupMarkerRef.current = L.marker([28.628, 77.3685], { icon: pickupIcon }).addTo(map);
+        pickupMarkerRef.current = L.marker([INITIAL_PICKUP_LOCATION.coordinates.lat, INITIAL_PICKUP_LOCATION.coordinates.lng], { icon: pickupIcon }).addTo(map);
       }
       if (!pickupGeofenceRef.current) {
-        pickupGeofenceRef.current = L.circle([28.628, 77.3685], {
+        pickupGeofenceRef.current = L.circle([INITIAL_PICKUP_LOCATION.coordinates.lat, INITIAL_PICKUP_LOCATION.coordinates.lng], {
           radius: 150,
           color: '#0284C7',
           fillColor: '#0284C7',
@@ -230,8 +333,8 @@ export default function MapInner() {
             ${selectedHospital.name.toUpperCase()} (CONFIRMED)
           </div>
         `,
-        iconSize: [180, 32],
-        iconAnchor: [90, 16],
+        iconSize: [200, 32],
+        iconAnchor: [100, 16],
       });
 
       if (!hospitalMarkerRef.current) {
@@ -263,5 +366,24 @@ export default function MapInner() {
     }
   }, [routeCoordinates, tripStatus, selectedHospital, trafficLights]);
 
-  return <div ref={mapContainerRef} className="w-full h-full min-h-[400px] relative" />;
+  return (
+    <div className="relative w-full h-full min-h-[400px]">
+      <div ref={mapContainerRef} className="w-full h-full" />
+
+      {/* Top Map Floating Badge: Demand Surge Toggle */}
+      <div className="absolute top-4 right-4 z-[400] flex items-center gap-2 pointer-events-auto">
+        <button
+          onClick={() => setShowSurgeZones(!showSurgeZones)}
+          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold shadow-lg border transition-all ${
+            showSurgeZones
+              ? 'bg-white text-orange-700 border-orange-200'
+              : 'bg-white/90 text-slate-600 border-slate-200'
+          }`}
+        >
+          <Flame className={`w-3.5 h-3.5 ${showSurgeZones ? 'text-orange-600 animate-pulse' : 'text-slate-400'}`} />
+          <span>{showSurgeZones ? 'Emergency Surge: ON' : 'Surge: Hidden'}</span>
+        </button>
+      </div>
+    </div>
+  );
 }

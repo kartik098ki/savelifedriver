@@ -32,11 +32,11 @@ export default function NavigationInstructionCard() {
 
   const isHeadingToCustomer = tripStatus === 'EN_ROUTE_TO_CUSTOMER' || tripStatus === 'ACCEPTED';
   const destinationName = isHeadingToCustomer
-    ? 'Sector 62, Noida (Customer Pickup)'
+    ? 'Shipra Sun City, Indirapuram (Customer Pickup)'
     : selectedHospital?.name || 'Fortis Hospital (Emergency Bay)';
 
-  const turnRoad = isHeadingToCustomer ? 'Sector 62 Main Rd' : 'Fortis Expressway Service Rd';
-  const nextRoad = isHeadingToCustomer ? 'Next: In 400m arrive at Gate 2' : 'Next: In 1.2km Emergency Trauma Ramp';
+  const turnRoad = isHeadingToCustomer ? 'Kala Patthar Marg' : 'Fortis Expressway Service Rd';
+  const nextRoad = isHeadingToCustomer ? 'Next: In 350m Gate 3 Security Entrance' : 'Next: In 1.2km Emergency Trauma Ramp';
 
   return (
     <motion.div

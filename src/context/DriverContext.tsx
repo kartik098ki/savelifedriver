@@ -222,11 +222,11 @@ export const DriverProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       driverId: INITIAL_DRIVER.id,
       pickupLocation: INITIAL_PICKUP_LOCATION,
       fare: 450,
-      distanceKm: 3.2,
-      estimatedMinutes: 12,
+      distanceKm: 1.8,
+      estimatedMinutes: 4,
       status: 'BOOKING_RECEIVED',
       emergencyLevel: 'HIGH',
-      otp: '4827',
+      otp: '4829',
       createdAt: new Date().toISOString(),
       rejectedHospitals: [],
       reRouteCount: 0,
@@ -235,13 +235,13 @@ export const DriverProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     setBooking(newBooking);
     setTripStatus('BOOKING_RECEIVED');
     setCountdownSeconds(10);
-    setRemainingDistanceKm(3.2);
-    setRemainingEtaMinutes(12);
+    setRemainingDistanceKm(1.8);
+    setRemainingEtaMinutes(4);
 
     soundEffects.playEmergencyBookingAlarm();
 
     // Voice announcement in chosen language
-    voiceService.speakIncomingBooking('Sector 62 Noida', 'Fortis Emergency Hospital', 450);
+    voiceService.speakIncomingBooking('Shipra Sun City Indirapuram', 'Fortis Emergency Hospital', 450);
 
     if (countdownTimerRef.current) clearInterval(countdownTimerRef.current);
 
@@ -319,8 +319,8 @@ export const DriverProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       'Customer Pickup'
     );
     setRouteCoordinates(route.coordinates);
-    setRemainingDistanceKm(3.2);
-    setRemainingEtaMinutes(12);
+    setRemainingDistanceKm(1.8);
+    setRemainingEtaMinutes(4);
     setCurrentSpeed(46);
 
     setTimeout(() => {
@@ -331,8 +331,8 @@ export const DriverProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       animateRealisticMovement(
         driver.currentLocation,
         INITIAL_PICKUP_LOCATION.coordinates,
-        3.2,
-        12,
+        1.8,
+        4,
         () => {
           setTripStatus('ARRIVED_AT_CUSTOMER');
           voiceService.speakArrivedAtPickup();

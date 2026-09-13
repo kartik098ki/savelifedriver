@@ -387,8 +387,12 @@ export default function PatientPanel() {
                 <h4 className="text-sm font-black text-slate-900 mt-2">
                   Enter 4-Digit Customer OTP
                 </h4>
-                <p className="text-xs text-slate-500 mt-0.5">
-                  Display on customer app screen
+                <div className="mt-1.5 inline-flex items-center gap-1.5 px-3 py-1 bg-amber-50 border border-amber-200 rounded-xl text-amber-900 text-xs font-bold">
+                  <span>🔑 Customer SMS OTP:</span>
+                  <span className="font-black text-amber-700 font-mono tracking-wider">4829</span>
+                </div>
+                <p className="text-[11px] text-slate-400 mt-1">
+                  Ask the patient or attendant for the 4-digit code
                 </p>
               </div>
 

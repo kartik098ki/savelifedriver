@@ -102,9 +102,9 @@ export default function TopIncomingBookingBanner() {
                     Pickup Location
                   </span>
                   <p className="font-extrabold text-sm text-slate-900 truncate">
-                    Sector 62, Noida
+                    {booking.pickupLocation.address}
                   </p>
-                  <p className="text-[11px] text-slate-500">Approx. 400m from current position</p>
+                  <p className="text-[11px] text-emerald-700 font-bold">1.8 km away • 4 min response ETA</p>
                 </div>
               </div>
 

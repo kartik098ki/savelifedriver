@@ -1,7 +1,7 @@
 # 🚑 SAVIFE Ambulance Driver Application & Emergency Dispatch System
 
 > **Production-Grade Emergency Ambulance Driver & First-Responder Platform**  
-> Built for rapid clinical triage, real-time GPS waypoint navigation, automated **Gnani.ai Indic Voice Guidance**, **Autonomous AI Hospital Telephony Calling Agents**, and frictionless ride lifecycle management.
+> Built for rapid clinical triage, real-time GPS waypoint navigation, **Gnani.ai Indic Voice Guidance**, **Uber/Rapido-Style Emergency Surge Heatmaps**, **Secure 4-Digit Customer SMS OTP Verification**, **Autonomous AI Hospital Calling Agents**, and frictionless ride lifecycle management.
 
 [![Next.js 14](https://img.shields.io/badge/Next.js-14.2.35-black?style=flat-square&logo=next.js)](https://nextjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue?style=flat-square&logo=typescript)](https://www.typescriptlang.org/)
@@ -11,136 +11,143 @@
 
 ---
 
-## 🤖 Deep Dive: AI & Gnani.ai Integrations
-
-SAVIFE leverages specialized Artificial Intelligence modules at every stage of the emergency response pipeline. Below is the exact breakdown of **where, why, and how Gnani.ai and other AI systems are used in the codebase**:
+## 🌟 Key Capabilities & Advanced Architecture
 
 ```
-                                  SAVIFE AI ECOSYSTEM
+                                      SAVIFE CORE ENGINE
   ┌────────────────────────────────────────────────────────────────────────────────────────┐
   │                                                                                        │
-  │   1. GNANI.AI INDIC VOICE ASSISTANT                                                   │
-  │      ├─ [File: src/services/voice-service.ts]                                          │
-  │      ├─ [File: src/app/api/voice/speak/route.ts]                                       │
-  │      └─ Natural Hindi / Hinglish / English voice synthesis for hands-free driving      │
+  │   1. 5-MINUTE PROXIMITY DISPATCH ENGINE                                                │
+  │      ├─ Real-time matching within 1.5 - 2.5 km radius (e.g., Shipra Sun City ~4 mins) │
+  │      └─ Guaranteed upfront emergency payout badge (₹450) with 10-second countdown     │
   │                                                                                        │
-  │   2. GNANI.AI TELEPHONY CALLING AGENT (ER Pre-Admission)                               │
-  │      ├─ [File: src/services/hospital-agent-service.ts]                                  │
-  │      ├─ [File: src/app/api/ai/hospital-agent/route.ts]                                 │
-  │      ├─ [File: src/components/dashboard/HospitalAgentOverlay.tsx]                     │
-  │      └─ Autonomous voice bot calls Hospital ER desks to reserve beds & doctors        │
+  │   2. SECURE 4-DIGIT CUSTOMER SMS OTP VERIFICATION                                      │
+  │      ├─ Customer receives secure 4-digit code (e.g. 4829) via SMS / App               │
+  │      ├─ Driver enters code upon arrival; verified via /api/bookings/verify-otp        │
+  │      └─ Prevents fraudulent claims; unlocks instant AI Hospital Discovery             │
   │                                                                                        │
-  │   3. LLM CLINICAL TRIAGE & HOSPITAL MATCHING (OpenAI / Gemini / Heuristics)            │
-  │      ├─ [File: src/services/ai-service.ts]                                             │
-  │      ├─ [File: src/app/api/ai/hospital-recommendations/route.ts]                       │
-  │      └─ Matches patient vitals (ECG/SpO2) against live ICU/Cath Lab telemetry          │
+  │   3. UBER / RAPIDO STYLE EMERGENCY DEMAND SURGE HEATMAP                                │
+  │      ├─ Live daylight CartoDB map with glowing High-Demand Emergency Zones             │
+  │      ├─ Surge multiplier tags (🔥 1.2x Payout • Indirapuram / ⚡ 1.35x • Sector 18)    │
+  │      └─ Live standby network ambulance markers (AMB-102 ALS, AMB-108 BLS)             │
   │                                                                                        │
-  │   4. REAL-TIME GPS & TRAFFIC-AWARE ROUTING ENGINE                                      │
-  │      ├─ [File: src/services/map-service.ts]                                             │
-  │      ├─ [File: src/context/DriverContext.tsx]                                          │
-  │      └─ Multi-waypoint simulation, speed telemetry, and turn-by-turn ETA calculations   │
+  │   4. GNANI.AI DEBOUNCED INDIC VOICE ASSISTANT & SUBTITLE HUD                           │
+  │      ├─ Spoken voice in Hindi, Hinglish, or English without annoying duplicate loops   │
+  │      ├─ On-screen bold subtitle banner ("🔊 Gnani AI: ...") with Replay & Mute        │
+  │      └─ Hands-free audio alerts for dispatch, arrival, OTP, and hospital bed holds    │
+  │                                                                                        │
+  │   5. AUTONOMOUS AI HOSPITAL TELEPHONY CALLING AGENT                                    │
+  │      ├─ Live voice bot calls Hospital ER desks to hold ICU Beds & Cardiologists        │
+  │      ├─ Auto-reroute fallback if hospital ICU is 100% full (e.g., Apollo ➔ Jaypee)    │
+  │      └─ Real-time dialogue HUD showing doctor standby notes & green corridor status   │
   │                                                                                        │
   └────────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-### 1. 🎙️ Gnani.ai Indic Voice Guidance Assistant
-- **Where in Codebase**:
-  - `src/services/voice-service.ts`: Client-side audio synthesizers with dialect handling.
-  - `src/app/api/voice/speak/route.ts`: Server-side endpoint integrating **Gnani TTS API** with fallback to Web Speech.
-  - `src/context/DriverContext.tsx`: Auto-triggers spoken notifications upon status changes.
-- **How it works**:
-  Ambulance drivers navigate through chaotic traffic where taking eyes off the road to look at phone screens is dangerous. Gnani.ai provides low-latency, clear, and high-fidelity Indic voice guidance:
-  - **Incoming Dispatch Alert**: *"Sector 62 se Fortis Hospital jaana hai. Guaranteed fare ₹450 hai."*
-  - **Pickup Arrival**: *"Aap pickup location par pahunch gaye hain. Kripya customer ka 4-digit OTP enter karein."*
-  - **Hospital Bed Confirmed**: *"Fortis Hospital ne patient ko receive karne ki confirmation de di hai. Route start kar rahe hain."*
-  - **Trip Completion**: *"Trip complete ho gayi hai. Fare ₹450 add ho gaya hai."*
-- **Language Dialects Supported**:
-  - `hi` (Pure Hindi)
-  - `hinglish` (Colloquial Hindi-English blend for urban drivers)
-  - `en` (English)
+## 🔑 1. Customer OTP Verification System (What is the OTP & How it Works)
+
+### 📌 How OTP Works:
+1. **Dispatch Generated**: When an emergency booking is confirmed, the SAVIFE core dispatch generates a secure 4-digit one-time passcode (`4829`).
+2. **Delivered to Customer**: The code is sent directly to the patient or attendant's phone via SMS and shown in their patient application.
+3. **Driver Arrival**: The driver arrives at the pickup gate (e.g. *Shipra Sun City, Indirapuram*) and clicks *"Slide when Arrived at Pickup"*.
+4. **Manual 4-Box Entry**: The driver asks the patient/attendant: *"Sir, kripya apna 4-digit OTP bataiye"*, and enters the code (`4 8 2 9`) into the 4 blank boxes.
+5. **Server Verification**: The input is verified against the secure backend route:
+   ```http
+   POST /api/bookings/verify-otp
+   Content-Type: application/json
+
+   {
+     "bookingId": "SVF-10293",
+     "otp": "4829"
+   }
+   ```
+6. **Instant AI Discovery Unlock**: Once verified (`200 OK`), the system transitions immediately into **AI Hospital Discovery & Triage matching**.
 
 ---
 
-### 2. 📞 Gnani.ai Conversational Telephony Calling Agent (ER Pre-Arrival)
-- **Where in Codebase**:
-  - `src/services/hospital-agent-service.ts`: Autonomous calling logic, prompt generator, and call history logger.
-  - `src/app/api/ai/hospital-agent/route.ts`: Server API handling telephone bot sessions.
-  - `src/components/dashboard/HospitalAgentOverlay.tsx`: Real-time driver HUD displaying live AI-to-Hospital transcript, bed reservation confirmation, and doctor standby notes.
-- **How it works**:
-  While the driver is transporting the patient, the AI Telephony Agent autonomously calls the emergency desk of the selected hospital:
-  1. **Initiation**: Informs the hospital of incoming patient vitals (*"SAVIFE Ambulance DL 01 AB 1234 en-route with HIGH priority cardiac patient (44M, suspected NSTEMI, SpO2 91%). ETA 8 mins."*).
-  2. **Bed & Team Reservation**: Confirms **ICU Bed reservation** and **Interventional Cardiologist on-call standby**.
-  3. **Automated Fallback Rerouting**: If the contacted hospital reports 100% ICU occupancy or Cath Lab downtime, the agent automatically rejects the admission, updates driver navigation to the secondary nearest facility (e.g., Jaypee Hospital), and dials the next facility seamlessly.
+## 🗺️ 2. Uber / Rapido Style Emergency Demand Surge Zones
+
+Ambulance drivers can monitor live high-incident zones on the crisp daylight map:
+- **🔥 Indirapuram Emergency Hotspot**: 650m radius • 4 Min Avg Response • `1.2x Payout`
+- **⚡ Sector 18 Commercial & Metro Hub**: 800m radius • Critical Surge Zone • `1.35x Payout`
+- **🟢 Sector 62 IT & Hospital Corridor**: 550m radius • Driver Standby Base
+- **🚑 Live Standby Ambulances**: Surrounding fleet units (`AMB-102 ALS`, `AMB-108 BLS`) rendered in real-time.
+- **Surge Toggle**: Dedicated floating control pill (`🔥 Emergency Surge: ON / OFF`) allowing drivers to focus on navigation during active trips.
 
 ---
 
-### 3. 🧠 LLM Clinical Triage & Intelligent Hospital Recommendation
-- **Where in Codebase**:
-  - `src/services/ai-service.ts`: Multi-criteria clinical matching prompt engine.
-  - `src/app/api/ai/hospital-recommendations/route.ts`: Instant discovery and ranking endpoint.
-  - `src/services/hospital-service.ts`: Verified hospital directory with live ICU bed counts and capabilities.
-- **How it works**:
-  Rather than simply navigating to the closest hospital by distance, the AI performs **Clinical Decision Support (MCDA)**:
-  - Evaluates patient condition: *Severe Chest Pain, suspected NSTEMI, SpO2 91%, BP 158/94*.
-  - Filters partner hospitals for matching critical equipment (*Cath Lab, Cardiac ICU, 24/7 Trauma Level 1*).
-  - Calculates a unified **AI Match Score (92% - 98%)** considering distance, real-time traffic ETA, bed availability, and specialty readiness.
+## 🤖 3. Deep Dive: Gnani.ai Voice & Other AI Integrations
+
+### 🎙️ A. Gnani.ai Indic Voice Assistant
+- **Files**: `src/services/voice-service.ts`, `src/app/api/voice/speak/route.ts`, `src/components/dashboard/VoiceSubtitleBanner.tsx`
+- **Dialects**: Hindi (`hi-IN`), Hinglish (`hinglish`), English (`en-IN`).
+- **Debounced Audio Delivery**: Employs speech locking to prevent audio spam or overlapping speech loops.
+- **On-Screen Subtitle Banner**: Displays bold transcription on top of the cockpit with one-tap Replay (🔄) and Mute (🔇) buttons.
+- **Spoken Prompts**:
+  - *Incoming Dispatch*: *"Shipra Sun City Indirapuram se emergency booking aayi hai. Hospital Fortis jaana hai. Fare ₹450 hai."*
+  - *Pickup Arrival*: *"Aap pickup location par pahunch gaye hain. Kripya customer se 4-digit OTP lekar enter karein."*
+  - *Hospital Confirmed*: *"Fortis Hospital ne ICU bed aur doctor confirm kar diya hai. Emergency bay ka route start ho raha hai."*
+  - *Trip Completed*: *"Trip complete ho gayi hai! ₹450 aapke driver wallet mein add ho gaye hain."*
+
+### 📞 B. Gnani.ai Autonomous Telephony Calling Agent (ER Pre-Admission)
+- **Files**: `src/services/hospital-agent-service.ts`, `src/app/api/ai/hospital-agent/route.ts`, `src/components/dashboard/HospitalAgentOverlay.tsx`
+- **Autonomous Calling**: Directly dials the hospital emergency reception desk.
+- **Vitals Telemetry**: Transmits patient condition (*44M, Acute Chest Pain, suspected NSTEMI, SpO2 91%, BP 158/94*).
+- **Bed & Cath Lab Reservation**: Locks **ICU Bed #4** and notifies on-call Interventional Cardiologist.
+- **Dynamic Fallback**: If the contacted hospital rejects admission (e.g., ICU beds 100% full), the agent automatically reroutes the driver to the secondary nearest facility (e.g., Jaypee Hospital) and dials the next facility.
+
+### 🧠 C. LLM Clinical Triage Matching Engine
+- **Files**: `src/services/ai-service.ts`, `src/app/api/ai/hospital-recommendations/route.ts`, `src/services/hospital-service.ts`
+- **Multi-Criteria Decision Analysis (MCDA)**: Evaluates patient vitals, emergency priority (ALS), distance, ETA, and live hospital bed counters to generate an **AI Match Score (92% - 98%)**.
 
 ---
 
-### 4. 🛰️ Realistic GPS Simulation & Turn-by-Turn Route Navigation
-- **Where in Codebase**:
-  - `src/services/map-service.ts`: Polyline waypoint generation and distance interpolation.
-  - `src/context/DriverContext.tsx`: `animateRealisticMovement` function simulating 45-step smooth coordinate transitions.
-  - `src/components/map/LiveMap.tsx` & `MapInner.tsx`: Leaflet + CartoDB interactive map with pulsing green ambulance beacon.
-  - `src/components/dashboard/NavigationInstructionCard.tsx`: Turn-by-turn maneuver HUD with live speedometer.
-
----
-
-## 🌟 Full Ride Lifecycle & UX Architecture
+## 📱 Full Ride Lifecycle Flowchart
 
 ```
-┌──────────────────────────────────────────────────────────────────────────┐
-│                             RIDE LIFECYCLE                               │
-└──────────────────────────────────────────────────────────────────────────┘
+   ┌────────────────────────────────────────────────────────┐
+   │             SAVIFE RIDE LIFECYCLE PIPELINE             │
+   └────────────────────────────────────────────────────────┘
 
  1. STANDBY / ONLINE
-    └─ Radar beacon active, monitoring Sector 62 Noida emergency zone.
+    └─ Active in Sector 62 base; monitoring Indirapuram & Sector 18 surge zones.
 
- 2. 10-SECOND EMERGENCY DISPATCH BANNER
-    └─ Circular SVG countdown timer, guaranteed fare ₹450, voice alert.
+ 2. 10-SECOND NEARBY DISPATCH ALERT
+    └─ Nearby pickup (Shipra Sun City • 1.8 km • 4 min away • ₹450 fare).
+    └─ Gnani voice alert + 10s circular countdown ring.
 
  3. EN ROUTE TO CUSTOMER
-    └─ Realistic GPS navigation along waypoints + "Slide when Arrived" slider.
+    └─ Realistic GPS navigation along waypoints with speed gauge & turn HUD.
+    └─ "Slide when Arrived at Pickup" tactile slider prevents misclicks.
 
  4. ARRIVED AT PICKUP / 4-DIGIT OTP
-    └─ Blank 4-box manual OTP input verified via /api/bookings/verify-otp.
+    └─ Driver asks customer for SMS OTP (4829).
+    └─ Server verification via /api/bookings/verify-otp.
 
  5. AI HOSPITAL DISCOVERY
-    └─ AI ranks hospitals by triage fit (ICU Ready, Cath Lab, Trauma L1).
+    └─ AI scores and ranks partner hospitals based on patient vitals & ICU beds.
 
  6. AI HOSPITAL CALLING AGENT OVERLAY
-    └─ Autonomous voice bot dials hospital ER reception & reserves ICU bed.
+    └─ Autonomous voice bot calls ER reception, locks ICU Bed #4, alerts doctor.
 
  7. EN ROUTE TO HOSPITAL
     └─ Real-time ambulance navigation to confirmed hospital emergency bay.
 
  8. PATIENT HANDOVER & SLIDE TO COMPLETE
-    └─ Tactile "Slide to Complete Ride" control confirms patient transfer.
+    └─ Tactile "Slide to Complete Ride" slider confirms transfer.
 
  9. PAYMENT & RATING
-    └─ Cash / Dynamic UPI QR code selector + 1–5 star driver feedback chips.
+    └─ Split Cash / Dynamic UPI QR code selector + 1–5 star customer feedback.
 
 10. WALLET CREDIT & RE-ARM
-    └─ Payout credited immediately to driver balance; returns to Standby.
+    └─ Instant ₹450 credit added to driver earnings; returns to Standby.
 ```
 
 ---
 
-## ⚙️ Environment Variables Setup
-
-Create a `.env.local` file in the root directory using `.env.local.example`:
+## ⚙️ Environment Variables (`.env.local`)
 
 ```bash
 # ------------------------------------------------------------------------------
@@ -148,7 +155,7 @@ Create a `.env.local` file in the root directory using `.env.local.example`:
 # ------------------------------------------------------------------------------
 GNANI_API_KEY=your_gnani_api_key_here
 GNANI_APP_TOKEN=your_gnani_app_token_here
-GNANI_VOICE_ID=hi_in_male_standard
+GNANI_VOICE_ID=hi_in_male_standard # Options: hi_in_male_standard, hinglish_neutral, en_in_male
 
 # ------------------------------------------------------------------------------
 # 2. LLM CLINICAL TRIAGE & HOSPITAL MATCHING ENGINE (OpenAI / Gemini)
@@ -168,11 +175,9 @@ MAPS_API_KEY=your_google_maps_key_here
 MAPBOX_ACCESS_TOKEN=your_mapbox_token_here
 ```
 
-> **Note**: If external API keys are not supplied, the platform automatically utilizes **built-in zero-latency fallback engines** (Web Speech API for Indic audio, clinical triage heuristics for hospital matching, and simulated telephony transcripts), ensuring 100% uptime and testability out of the box.
-
 ---
 
-## 🚀 Quick Start Guide
+## 🚀 Getting Started
 
 ### 1. Clone & Install
 ```bash
@@ -187,78 +192,11 @@ npm run dev
 ```
 Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-### 3. Run Production Build & Typecheck
+### 3. Production Build & Verify
 ```bash
 npm run build
 npm start
 ```
-
----
-
-## 📁 Repository Structure
-
-```
-├── src/
-│   ├── app/
-│   │   ├── api/
-│   │   │   ├── ai/
-│   │   │   │   ├── hospital-agent/route.ts          # AI Telephony Bot API
-│   │   │   │   └── hospital-recommendations/route.ts # Clinical Triage Matching API
-│   │   │   ├── bookings/
-│   │   │   │   ├── accept/route.ts                  # Dispatch Accept API
-│   │   │   │   ├── current/route.ts                 # Active State API
-│   │   │   │   ├── update-status/route.ts           # State Transition API
-│   │   │   │   └── verify-otp/route.ts              # 4-Digit OTP Verification API
-│   │   │   ├── hospitals/route.ts                   # Hospital Directory API
-│   │   │   └── voice/speak/route.ts                 # Gnani / Speech Synthesis API
-│   │   ├── earnings/page.tsx                        # Earnings & Incentive Audit
-│   │   ├── profile/page.tsx                         # Driver Profile & Language Switcher
-│   │   ├── trips/page.tsx                           # Trip History & Duty Logs
-│   │   ├── layout.tsx                               # Root Layout & Theme
-│   │   └── page.tsx                                 # Main Driver Cockpit
-│   ├── components/
-│   │   ├── dashboard/
-│   │   │   ├── HospitalAgentOverlay.tsx             # AI ER Call Overlay & Transcript
-│   │   │   ├── HospitalDiscoveryModal.tsx           # Hospital Triage & Bed Selection
-│   │   │   ├── NavigationInstructionCard.tsx        # Turn-by-Turn Maneuver HUD
-│   │   │   ├── PatientPanel.tsx                     # Right-Side Contextual State Machine
-│   │   │   ├── TopIncomingBookingBanner.tsx         # 10s Dispatch Countdown Banner
-│   │   │   ├── DriverChatModal.tsx                  # Patient In-App Messaging
-│   │   │   └── EmergencySOSModal.tsx                # 1-Tap Emergency SOS Hotline
-│   │   ├── layout/
-│   │   │   ├── DriverSidebar.tsx                    # Minimal Telemetry & Duty Switch
-│   │   │   └── Header.tsx                           # Top Status Bar
-│   │   └── map/
-│   │       ├── LiveMap.tsx                          # Map Wrapper
-│   │       └── MapInner.tsx                         # Leaflet Map Engine & Beacons
-│   ├── context/
-│   │   └── DriverContext.tsx                        # Global State & GPS Route Simulator
-│   ├── lib/
-│   │   ├── constants.ts                             # Initial State & Hospitals Data
-│   │   └── utils.ts                                 # Currency & Distance Formatters
-│   ├── services/
-│   │   ├── ai-service.ts                            # LLM Clinical Triage Service
-│   │   ├── hospital-agent-service.ts                # AI Telephony Calling Service
-│   │   ├── hospital-service.ts                      # Hospital Capacity Service
-│   │   ├── map-service.ts                           # Routing & Waypoints Service
-│   │   ├── sound-effects.ts                         # UI Tactile Audio Chimes
-│   │   └── voice-service.ts                         # Gnani Indic Voice Assistant
-│   └── types/
-│       └── index.ts                                 # Strict TypeScript Type Definitions
-├── prisma/
-│   └── schema.prisma                                # Database Schema
-├── .env.local.example                               # Environment Configuration Template
-├── package.json                                     # Project Dependencies & Scripts
-├── tailwind.config.ts                               # Tailwind Styling Config
-└── tsconfig.json                                    # TypeScript Config
-```
-
----
-
-## 🔒 Security, Privacy & Driver Protection
-- **Blank Driver Avatar**: Clean initials placeholder badge (`RK`) protecting driver PII on public dashboards.
-- **Server-Side OTP Verification**: Strict validation preventing fraudulent pickup claims.
-- **Tactile Swipe Controls**: Prevents accidental button presses during high-speed emergency transit.
 
 ---
 

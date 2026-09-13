@@ -11,6 +11,7 @@ import HospitalAgentOverlay from '@/components/dashboard/HospitalAgentOverlay';
 import DriverChatModal from '@/components/dashboard/DriverChatModal';
 import EmergencySOSModal from '@/components/dashboard/EmergencySOSModal';
 import PickupOtpPanel from '@/components/dashboard/PickupOtpPanel';
+import VoiceSubtitleBanner from '@/components/dashboard/VoiceSubtitleBanner';
 import { useDriver } from '@/context/DriverContext';
 import { Radio } from 'lucide-react';
 
@@ -60,7 +61,10 @@ export default function DriverDashboardPage() {
       {/* 3. RIGHT STATE ACTION PANEL */}
       <PatientPanel />
 
-      {/* Top Slide-Down Incoming Booking Request (From, To, Fare & 5s Timer) */}
+      {/* Live Gnani AI Voice Subtitle Banner */}
+      <VoiceSubtitleBanner />
+
+      {/* Top Slide-Down Incoming Booking Request (From, To, Fare & 10s Timer) */}
       <TopIncomingBookingBanner />
 
       {/* AI Hospital Recommendations Sheet */}

@@ -57,13 +57,74 @@ export const INITIAL_PATIENT: Patient = {
 };
 
 export const INITIAL_PICKUP_LOCATION = {
-  address: 'Tower 4, Sector 62, Noida, Uttar Pradesh 201309',
-  landmark: 'Near Stellar IT Park & Fortis Chowk',
+  address: 'Shipra Sun City, Gate 3, Indirapuram, Ghaziabad 201014',
+  landmark: 'Near Habitat Centre • 1.8 km (4 min away)',
   coordinates: {
-    lat: 28.6280,
-    lng: 77.3685,
+    lat: 28.6340,
+    lng: 77.3710,
   },
 };
+
+export interface DemandZone {
+  id: string;
+  name: string;
+  type: 'HIGH_DEMAND' | 'SURGE_EMERGENCY' | 'NORMAL_BASE';
+  lat: number;
+  lng: number;
+  radiusMeters: number;
+  label: string;
+  surgeMultiplier: string;
+  avgPickupMin: number;
+}
+
+export const HIGH_DEMAND_ZONES: DemandZone[] = [
+  {
+    id: 'ZONE-1',
+    name: 'Indirapuram Emergency Hotspot',
+    type: 'HIGH_DEMAND',
+    lat: 28.6340,
+    lng: 77.3710,
+    radiusMeters: 650,
+    label: '🔥 High Emergency Demand • 4 Min Avg Response',
+    surgeMultiplier: '1.2x Payout',
+    avgPickupMin: 4,
+  },
+  {
+    id: 'ZONE-2',
+    name: 'Sector 18 Commercial & Metro Hub',
+    type: 'SURGE_EMERGENCY',
+    lat: 28.5700,
+    lng: 77.3200,
+    radiusMeters: 800,
+    label: '⚡ Critical Surge Zone • High Priority Calls',
+    surgeMultiplier: '1.35x Payout',
+    avgPickupMin: 5,
+  },
+  {
+    id: 'ZONE-3',
+    name: 'Sector 62 IT & Hospital Corridor',
+    type: 'NORMAL_BASE',
+    lat: 28.6200,
+    lng: 77.3630,
+    radiusMeters: 550,
+    label: '🟢 Driver Standby Base • Active Network',
+    surgeMultiplier: 'Standard',
+    avgPickupMin: 3,
+  },
+];
+
+export interface StandbyAmbulanceMarker {
+  id: string;
+  type: string;
+  lat: number;
+  lng: number;
+  status: 'STANDBY' | 'ON_DUTY';
+}
+
+export const STANDBY_AMBULANCES: StandbyAmbulanceMarker[] = [
+  { id: 'AMB-102 (ALS)', type: 'Advanced Life Support', lat: 28.6250, lng: 77.3610, status: 'STANDBY' },
+  { id: 'AMB-108 (BLS)', type: 'Basic Life Support', lat: 28.6380, lng: 77.3760, status: 'STANDBY' },
+];
 
 // 10 Detailed Hospitals around Noida/Delhi NCR
 export const NEARBY_HOSPITALS: Hospital[] = [
